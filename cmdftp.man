@@ -1,0 +1,374 @@
+.TH cmdftp 1 "2005-03-18" "Claudio Fontana"
+.SH NAME
+.B cmdftp
+\- command line File Transfer Protocol client
+
+.SH SYNOPSIS
+
+.B cmdftp
+[
+.I "-a:b:dghnmp:q"
+]
+.I hostname
+
+.SH DESCRIPTION
+
+.PP
+cmdftp is an alternative client for the File Transfer Protocol.
+
+It is quite different from the default 
+.BR ftp (1)
+client, because it always uses passive mode for all data transfers,
+has a syntax that mimics the shell, has local and remote mode, 
+supports multiple and recursive file transfers, has more complex 
+commands like copy and move, permits remote and local text file viewing and
+editing, is able to detect network failures and resume the operation,
+may resume broken downloads between sessions, has tab completion like the shell
+for both local and remote file names, and has large file support.
+
+The ftp host to connect to must be specified on invocation ( parameter
+.I hostname
+). 
+
+First of all, the client will attempt autologin, using information provided
+in
+.I ~/.netrc
+; if it fails, or the autologin feature has been disabled (
+.I "-n"
+), a user/password pair must be manually entered.
+By default, failure to login causes the program to quit; the number of manual
+login attempts can be altered with the
+.I "-a"
+option.
+
+The cmdftp prompt appears as soon as the login operation completes,
+and informs the user that the client is ready to receive commands: see
+.B COMMANDS: LIST
+section. The current directory is shown in the prompt if option
+.I "-P"
+has not been specified.
+
+The prompt does not appear at all if the quiet option (
+.I "-q"
+) has been specified.
+
+There are many more options that control how cmdftp behaves: see 
+.B OPTIONS
+section for a full list and description.
+
+Additionally, this client can interface with other programs using environment
+variables: see 
+.B ENVIRONMENT
+section.
+
+This program can be easily automated: see
+.B USAGE_NOTES
+section for tips and notes about the cmdftp netrc parser.
+
+.SH OPTIONS
+
+.TP 
+.B "-h"
+show command line options and exit.
+If your system supports long options, then long option equivalents are shown.
+.TP 
+.B "-v"
+show version information and exit
+.TP
+.BI "-p " FTP_PORT
+specify the remote TCP port of the server (def:21)
+.TP
+.BI "-b " BUFFER_SIZE
+specify the size in bytes of the transfer buffer (def:8192)
+.TP
+.BI "-a " N_ATTEMPTS
+max number of manual login attempts before giving up
+.TP
+.B "-q "
+be quiet (suppress copyright message, warnings and transfer progress)
+.TP
+.B "-m "
+disable manual login. Rely on autologin only.
+.TP
+.B "-n "
+disable autologin (~/.netrc). Rely on manual login only.
+.TP
+.B "-g "
+disable output paging
+.TP
+.B "-d"
+disable forced ignore of dot-files
+.TP
+.B "-P"
+disable path in prompt
+
+.SH ENVIRONMENT
+.TP
+.B PAGER
+refers to command p; sets the pager for file viewing and ls output. 
+If the variable is not set, the output is simply not paged.
+.TP
+.B EDITOR
+refers to command e, and is required to be able to edit local and remote files
+from cmdftp. If no editor is set in the EDITOR variable, the e command will
+not be available.
+.TP
+.B HOME
+refers to the autologin feature, and is required to be able to use ~/.netrc
+(to find your home directory actually). It should be already set on your
+system. Note: double check ~/.netrc file permissions!
+.TP
+.B TMPDIR
+an alternative directory where cmdftp temporary files should be stored.
+
+.SH COMMANDS: NOTES
+You will see that a lot of the commands resemble in names and behaviour similar Unix commands and shell builtins. However there are differences both in names and behaviour, and expecially on parameter passing (number of parameters are fixed in cmdftp), and in the fact that no command options are allowed.
+
+For example, the Unix cp command has an omonymous cp equivalent command in cmdftp; however, cmdftp cp command behaves like cp -r, and source and target must be always specified using exactly two parameters (which may contain wildcards).
+
+Commands implementation do not generally rely on external software. The FTP (remote) implementation of the commands has been abstracted so local implementation has been achieved with cost near zero. This has the additional benefit of making cmdftp also suited as a very small rescue tool usable even on broken Unix systems.
+
+The e command (edit file) is an exception because it needs a text editor (and an EDITOR env variable set) to work.
+
+There is also an exception in the form of the local dir command (get pretty list - introduced recently).
+This command tries to run "/bin/ls -l". However on failure (you do not have /bin/ls) it uses the consuete internal implementation of the ls command and returns a normal (not pretty) list.
+
+.SH COMMANDS: LIST
+
+.TP
+.B h
+displays a slightly less descriptive version of this list
+.TP
+.B l
+switch to local mode, following commands refer to local
+.TP
+.B r              
+switch to remote mode, following commands refer to remote
+.TP
+.B pwd
+prompt working directory. Resembles /bin/pwd command.
+.TP
+.BI "cd " PATH
+change working directory to PATH. Resembles cd shell builtin.
+.TP
+.BI "md " PATH
+make new directory PATH. Resembles /bin/mkdir command. Alias: mkdir
+.TP
+.BI "rd " PATH
+remove empty directory PATH. Resembles /bin/rmdir command. Alias: rmdir
+.TP
+.BI "rm " MASK
+delete regular files matching MASK, skip directories. Resembles /bin/rm command.
+.TP
+.B ls
+list current directory contents. Resembles /bin/ls command given with no parameters.
+.TP
+.BI "ls " MASK
+list files/dirs matching MASK. Resembles /bin/ls -d command.
+.TP
+.B dir
+pretty list of files in current directory. Resembles /bin/ls -l command given with no parameters. Local implementation really spawns /bin/ls in this case, and reverts to a normal (not pretty) list if /bin/ls is not present.
+.TP
+.BI "cp " "SRC TRG"
+copy SRC to TRG. Resembles /bin/cp -r command.
+.TP
+.BI "mv " "SRC TRG"
+move SRC to TRG. Resembles /bin/mv command.
+.TP
+.BI "u " "MASK DIR"
+upload files/dirs matching MASK into remote DIR (recurs) *
+Relative paths and completion are resolved locally in MASK, and remotely in DIR.
+.TP
+.BI "d " "MASK DIR"
+download files/dirs matching MASK into local DIR (recurs) *
+Relative paths and completion are resolved remotely in MASK, and locally in DIR.
+.TP
+.BI "dr " "MASK DIR"
+same as above, and if local file already exists, resume **
+.TP
+.BI "ren " "MASK FROM TO"
+rename files matching MASK replacing the first occurrence of FROM to TO in the base name. This is similar to
+.BR rename (1)
+but still different (parameter ordering, replacing only in basename). Alias: rename
+.TP
+.BI "p " FILE
+print contents of the FILE on the terminal. Resembles /bin/cat command. Alias: cat
+.TP
+.BI "e " FILE
+edit FILE. Requires a working editor, and an EDITOR env variable set to that editor.
+.TP
+.B "q "
+quit client
+.TP
+.B "quit|exit|bye"
+aliases for q command
+.TP
+.B <TAB>
+tab-completion for filenames.
+
+.SH COMMAND NOTES
+
+.TP
+.B *
+This transfer command is mode-independent. Also remember that cmdftp commands have a fixed number of parameters, so you MUST specify a target directory. If that dir does not exist, it is created.
+
+.TP
+.B **
+resuming has only sense between sessions, or if you explicitly interrupt
+the transfer using CTRL+C or equivalent, because cmdftp will automatically
+try to resume the current command (eventually reconnecting) if any network
+problems are detected. Also, using dr command might be dangerous if used
+incorrecly, because if the incomplete file is a DIFFERENT file instead 
+(same name, different content) the target file can be screwed up.
+If you did not understand the problem just use the basic d command and you
+will be fine.
+
+.SH USAGE_NOTES
+.PP
+Some tips to automate cmdftp:
+
+.TP
+.B "- "
+use the autologin feature and provide valid login information in 
+.I ~/.netrc
+: see netrc page for the full file format description. Some notes about
+cmdftp netrc parser follow near the end of this section.
+
+.TP
+.B "- "
+use the quiet option (
+.I -q
+), although redirecting stdout and stderr to a logfile could be useful instead
+
+.TP
+.B "- "
+store common command sequences in a file, then run cmdftp with stdin redirected
+
+.TP
+.B "- "
+use things like cron (
+.BR crond (8),
+.BR crontab (1)
+) to execute cmdftp scripts periodically.
+
+.SH ESCAPING
+The command line parser, and the cmdftp netrc parser both recognize
+the same C-like escape sequences.
+Those are:
+
+\\a, \\b, \\f, \\n, \\t, \\v,
+
+\\xHH, (HH are hex digits) - use to specify a character
+
+\\OOO, (OOO are octal digits) - use to specify a character
+
+Escaping other characters has the effect of getting that character.
+Use to escape special meaning characters, like \\ itself or the space.
+Quotes have NO special meaning so don't quote your strings.
+Using these sequence is expecially useful to be able to work with
+filenames containing spaces, or login information containing spaces.
+
+Note however that actively using ftp directories and file names containing
+spaces and other problematic characters (\\n, \\r) is very discouraged,
+since FTP servers are allowed to refuse to list them, or refuse to process
+some commands on them.
+If you get mysterious errors, check your filename for exotic characters.
+
+Here is an example netrc which contains some of those escape sequences:
+
+.PD 0
+.PP
+machine somewhere.myhost.com
+.PP
+login the\\ spaced\\ user
+.PP
+password \\x64eadly\\040habit
+
+.PP
+machine anotherhost.hisnet.org
+.PP
+login with\\\\backslash
+.PP
+password \\tcrazy_tabs_in_pass\\t
+
+.PP
+default
+.PP
+login anon\\ymous
+.PP
+password guest
+
+.PD
+Again, see netrc man page to get the full netrc file format description.
+Note that 'account' and 'macdef' are currently NOT supported.
+
+.SH SIGNALS
+
+.TP 
+.B SIGINT:
+sending this signal when no command is being processed causes the program to quit.
+During the processing of transfer commands, it is possible to interrupt them by
+sending the signal (CTRL+C for example). The client and the server will need some seconds to return in synch, and then the cmdftp prompt will be displayed again.
+
+If some command has been interrupted, and again a SIGINT arrives, cmdftp will abort.
+
+.TP
+.B SIGPIPE:
+this signal is ignored.
+
+.TP
+.I all other
+signals are left to their default handlers during execution.
+
+.SH EXIT STATUS
+.PP
+cmdftp exits with 0 on clean quit (quit command) or after displaying requested
+information through
+.I "-h"
+and
+.I "-v"
+options, but only when all output has been successfully written to stdout.
+If a failure on stdout is detected, -1 is returned instead.
+
+In all other cases (fatal errors), exit status is > 0.
+       
+.SH LIMITATIONS
+cmdftp has a very simplified readline replacement: there is no history and
+little support for cmdline editing.
+
+It is very easy to force cmdftp in an infinite loop by wrong use of cp command
+(infinitely copying one directory into itself). 
+There is no loop detection currently so beware.
+
+cmdftp uses passive mode FTP only by choice.
+
+cmdftp has no special proxy support.
+You can use real FTP proxies with cmdftp. See ftp.proxy for example.
+
+.SH BUGS
+
+at the time of writing cmdftp has been very recently restructured so please help by reporting bugs you might find.
+
+Please use the sourceforge bug tracker at the sourceforge project page or send them to the AUTHOR.
+
+.SH AUTHOR
+Claudio Fontana
+
+<sick_soul@users.sourceforge.net>
+
+.SH HOME PAGE
+.I http://cmdftp.sourceforge.net/
+
+.I http://sourceforge.net/projects/cmdftp/
+
+.SH FILES
+
+.I ~/.netrc
+\- autologin file
+
+.SH SEE ALSO
+
+.BR ftp (1),
+.BR ftpd (8),
+.BR netrc,
+RFC 959

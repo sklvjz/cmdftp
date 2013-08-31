@@ -1,0 +1,442 @@
+2006-08-26 Claudio Fontana     <claudio@gnu.org>
+
+	* cmdftp.c (cmdftp_raw_mode): reverted last broken change.
+	  Keep manual VMIN and VTIME settings.
+
+2006-07-28 Claudio Fontana     <claudio@gnu.org>
+
+	* cmdftp.c (cmdftp_raw_mode): use ^ (xor) instead of & ~ (and not)
+	  to unset the flags. Force the c_cc[VMIN] and c_cc[VTIME] to the
+	  needed values to fix a problem under SunOS.
+
+2006-06-05 Claudio Fontana     <claudio@gnu.org>
+
+	* cmdftp.c: update some copyright strings for 2006.
+	* cmdftp.h: likewise.
+
+	* cmdftp.c (print_progress): enforce 80 char lines more strictly.
+	  Move progress to beginning of the string, and leave filename
+	  last. Truncate beginning of filename with [...] to stay within 80
+	  chars limit.
+	
+	* cmdftp.c: remove unused parameter op_len from print_progress()
+	  and all callers.
+	* cmdftp.h: likewise.
+
+2006-03-05 Claudio Fontana     <claudio@gnu.org>
+
+	* cmdftp.c: show local/remote prompt. It's about time.
+
+2006-03-02 Claudio Fontana     <claudio@gnu.org>
+
+	cmdftp-0.9.3 released.
+	
+2006-02-23 Claudio Fontana     <claudio@gnu.org>
+
+	* configure.ac: rewritten 2005-12-17 fix using the correct
+	  AC_CHECK_TYPE default includes.
+
+	* configure.ac: added --enable-list-hack (default=yes) to
+	  enable/disable the LIST/NLST workaround for servers not
+	  accepting parameters on those commands, and to make
+	  NLST work with filenames containing spaces.
+	  AC_DEFINE CMDFTP_LIST_HACK if enabled.
+
+	* cmdftp.h, cmdftp.c: use CMDFTP_LIST_HACK to control the
+	  mentioned optional workaround
+
+	* Makefile.am: revert changes about description and description-long
+
+2006-02-16 Claudio Fontana     <claudio@gnu.org>
+	* cmdftp.c, cmdftp.h: changed split command implementation in
+	  order to make use of the existing parsing code to effectively
+	  escape special characters in filenames. Fixed tab completion
+	  to complete with escaped sequences for some characters.
+
+2005-12-17 Claudio Fontana     <claudio@gnu.org>
+	* configure.ac: added sys/socket.h to the default includes for tests,
+	  fixes portability problem with OpenDarwin.
+	  Reported and fixed by Toby Peterson <toby@opendarwin.org>
+	  (ported original fix from configure to configure.ac)
+	  
+2005-07-11 Claudio Fontana     <claudio@gnu.org>
+	* Makefile.am: added targets description and description-long
+	* to get information about cmdftp
+
+2005-06-03 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed login procedure to correctly handle anonymous
+	  logins when a password is not required at all
+
+	* cmdftp.c, cmdftp.h: updated Free Software Foundation address
+	* COPYING: updated GPL license file
+
+2005-04-21 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* configure.ac: changed a notice to a warning (large file support)
+	* configure.ac: show some output variables after configuration
+	* cmdftp.c: added new aliases: cat (p), rmdir (rd), mkdir (md),
+	                               rename (ren)
+	* cmdftp.man: new aliases documented
+
+2005-04-12 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: use ptrdiff_t to store pointer differences
+
+2005-03-24 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed potential memory leak
+	* configure.ac: updated AM_INIT_AUTOMAKE, added dist-bzip2 option
+
+2005-03-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: scan for suitable temporary files directory, checking in order:
+	  env("TMPDIR"), P_tmpdir, "/tmp". On failure, exit with error.
+	* cmdftp.h: new CMDFTP_ERR_TMPD (see above)
+	* cmdftp.h: wrapped mkstemp replacement declaration in if !HAVE_MKSTEMP
+	* cmdftp.man: updated manpage
+	* cmdftp.c: fixed unportable use of generic function pointer
+	  (forgot to cast back to original pointer type in do_setcwd())
+	* cmdftp.c: replaced cmdftp_t with cmdftp_termios (_t ending looks like
+	  a type)
+	* got rid of a couple of remaining const
+	
+2005-03-17 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: new function cleanexit(), where stdout is fclosed.
+	  Exit status depends on result.
+	* cmdftp.c: fixed usage string and option error strings
+	* cmdftp.man: document exit status.
+	
+2005-03-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.h: wrapped strdup declaration in #if !HAVE_STRDUP
+	
+2005-03-11 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed parentheses in sizeof
+
+2005-02-13 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, cmdftp.c: exclude error reporting in some cases
+	  (tab completion and such)
+
+2005-02-13 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.h, configure, configure.ac:
+	  - added better error reporting.
+	    (spotted by Vladi Belperchinov-Shabanski)
+	  - Tweaked configure script.
+
+2005-01-30 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* auto-includes.h, cmdftp.c, cmdftp.h, cmdftp.man:
+	  set year to 2005
+
+2005-01-30 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: shortened progress code
+
+2005-01-26 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, cmdftp.c, cmdftp.h, cmdftp.man: prepare for release
+
+2005-01-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed cmd_d and cmd_u to correctly handle
+	  single dir to single dir
+
+2005-01-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: detect INTR during recv_confirm()
+
+2005-01-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed a lot of issues with return values, INTR and remote ops
+
+2005-01-17 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixing mv command when moving 1dir->1dir
+
+2005-01-17 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed size unit strings, removed CMDFTP_WAR_MASK
+	  where they did not belong
+
+2005-01-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS: chit chat
+
+2005-01-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README: chit chat
+
+2005-01-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.man: fixed remote_size to report intr/errors,
+	  fixed upload uninterruptible bug, manpage edits
+
+2005-01-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c:
+	  revert retval changes (broke interrupt)
+
+2005-01-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c:
+	  removed eccessive parentheses
+
+2005-01-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.h:
+	  added missing proto for print_prompt()
+
+2005-01-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c:
+	  removed [...]/ prefix when shortening filenames in print_progress
+
+2005-01-15 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README, cmdftp.man: towards 0.9.0 release
+
+2005-01-15 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README, cmdftp.c, cmdftp.man:
+	  updated README and 'various other things' (who remembers?)
+
+2005-01-15 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.man: SIGNALS added to manpage
+
+2005-01-15 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.h, cmdftp.man: changed SIGINT handling.
+
+2005-01-15 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed free() bug
+
+2005-01-15 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, cmdftp.c, cmdftp.h, cmdftp.man:
+	  better completion when dealing with dirs, man page updated.
+
+2005-01-15 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, cmdftp.c, cmdftp.h, cmdftp.man, configure, configure.ac:
+	  Restructured the whole code. Changed almost every single
+	  function in fact. Alpha code warning.
+
+	  - Introduced new ren command to rename multiple files
+
+	  - Changed the cp and mv semantics completely. Should now mimic
+	    cp -r and mv
+
+	  - Introduced new -P option to suppress path in cmdftp prompt (...)
+
+2005-01-10 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.h, cmdftp.man:
+	  single implementation for both local and remote ren using fun_ptr
+
+2005-01-10 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* configure, configure.ac: moving to 0.8.1 development
+
+2005-01-10 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, cmdftp.c, cmdftp.h, cmdftp.man:
+	  added ren command with rename(1) like syntax
+
+2004-12-24 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README: cosmetic
+
+2004-12-24 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, README, configure, configure.ac: tiny changes
+
+2004-12-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, auto-includes.h, cmdftp.c, config.h.in, configure, configure.ac:
+	  added some NEWS
+
+2004-12-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README, cmdftp.man: documented changes
+
+2004-12-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* auto-includes.h, cmdftp.c, config.h.in, configure, configure.ac:
+	  added replacement for mkstemp (ugly one), fixed some autotools things
+
+2004-12-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.h: built replacements for strdup and snprintf
+
+2004-12-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed blocking cmdftp_execute
+
+2004-12-02 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed glitch with appearing asterisks using tab without
+	  parameters on cmdline
+
+2004-11-30 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: progress now adapts to file size.
+
+2004-11-25 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* config.h.in, configure, configure.ac: added check for socklen_t
+
+2004-11-25 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, README, auto-includes.h, cmdftp.c, cmdftp.h, cmdftp.man,
+	config.h.in, configure, configure.ac: minor tweaks
+
+2004-11-24 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* Makefile.am, Makefile.in, NEWS, README, auto-includes.h,
+	  cmdftp.c, cmdftp.h, cmdftp.man, config.h.in, configure,
+	  configure.ac, noauto-includes.h:
+	  - initiated new cmdftp-development version
+	  - added support for 64bit LARGE FILES
+	  - changes towards C99
+	  - fixing a lot of portability issues (still many probably remain)
+	  - installation through ./configure; make; make install; is now NEEDED
+	  - a lot of other small changes
+
+2004-11-23 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, README, cmdftp.c, cmdftp.h, cmdftp.man:
+	  preparing for cmdftp-0.7.6 release
+
+2004-11-23 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed bug in readline_tab
+
+2004-11-23 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, cmdftp.c, cmdftp.h: implemented pretty lists
+
+2004-11-21 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: fixed spaces issues with new autocompletion
+
+2004-11-21 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, README, cmdftp.c, cmdftp.h, cmdftp.man:
+	 - empty command no longer quits client, it simply does nothing
+	   (spotted by Vladi Belperchinov-Shabanski)
+	 - tolerate spaces between command arguments
+	 - command q is a new alias for quit (joins exit and bye)
+	   (suggested by Vladi Belperchinov-Shabanski)
+	 - cmdftp greeting on quit suppressed by quiet option (-q)
+
+
+2004-11-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c:
+	 - added absolute value 8 as backspace char in addition to VERASE
+	   in order to work around problems under some implementations 
+	   (suggested by Vladi Belperchinov-Shabanski)
+
+2004-11-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* NEWS, configure, configure.ac:
+	  - regenerated for next development cycle
+	  - updated NEWS
+
+2004-11-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c:
+	 - tab completion now shows matching names if not unique
+
+2004-11-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c:
+	 * fixed progress percentage indicator bug, and changed to show one
+	   decimal place
+	   (fixed by Vladi Belperchinov-Shabanski)
+
+2004-11-12 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* AUTHORS, CHANGELOG, ChangeLog, INSTALL, Makefile.am, Makefile.in,
+	NEWS, README, RELEASE, aclocal.m4, auto-includes.h, cmdftp.c,
+	cmdftp.h, cmdftp.man, config.guess, config.h.in, config.sub,
+	configure, configure.ac, depcomp, install-sh, makefile, missing,
+	noauto-includes.h:
+	
+	finally updated CVS, will be bleeding edge from now on
+
+2004-01-23 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, README, RELEASE, cmdftp.c, cmdftp.h: [no log message]
+
+2004-01-21 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, cmdftp.c, cmdftp.h, makefile: [no log message]
+
+2004-01-18 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, RELEASE, cmdftp.c, cmdftp.h, configure, makefile: [no
+	log message]
+
+2003-11-20 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* makefile: [no log message]
+
+2003-11-20 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, README, RELEASE, cmdftp.c, cmdftp.h, configure,
+	makefile: [no log message]
+
+2003-11-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* configure: [no log message]
+
+2003-11-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG: [no log message]
+
+2003-11-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: [no log message]
+
+2003-11-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, README, RELEASE, cmdftp.h, makefile: [no log message]
+
+2003-11-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* APPUNTI: [no log message]
+
+2003-11-16 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.h: [no log message]
+
+2003-11-10 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: [no log message]
+
+2003-11-10 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README, RELEASE, cmdftp.c: [no log message]
+
+2003-11-10 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, cmdftp.c: [no log message]
+
+2003-11-09 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, README, RELEASE, cmdftp.c, cmdftp.h: autologin,
+	bugfixes, ...
+
+2003-11-08 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, cmdftp.c: fixed
+
+2003-11-08 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, README, RELEASE, cmdftp.c, cmdftp.h, makefile: [no log
+	message]
+
+2003-11-05 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, cmdftp.c, cmdftp.h, makefile: [no log message]
+
+2003-11-05 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README: [no log message]
+
+2003-11-04 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, RELEASE: switched to _XOPEN_SOURCE 600
+
+2003-11-04 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.h, makefile: switched to _XOPEN_SOURCE 600
+
+2003-11-03 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, cmdftp.c, makefile: towards c89+POSIX
+
+2003-11-02 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, README, RELEASE, cmdftp.c, cmdftp.h, makefile: towards
+	POSIX compliance
+
+2003-10-30 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, cmdftp.c: blasphemous declarations corrected
+	throughout the code
+
+2003-10-14 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, RELEASE, cmdftp.c: bug corrected in function ls() -
+	closed stdout when PAGER env var not found -
+
+2003-10-03 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, RELEASE: added volatile to int transfer_interrupted,
+	changed TRAN_INTR_PIPE to mean 'every reason which is not
+	TRAN_INTR_INT'
+
+2003-10-01 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: [no log message]
+
+2003-09-21 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c, cmdftp.h: [no log message]
+
+2003-09-21 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* APPUNTI, README: [no log message]
+
+2003-09-21 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, RELEASE, cmdftp.c, cmdftp.h: [no log message]
+
+2003-09-20 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: [no log message]
+
+2003-09-20 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: changed cmdftp_execute(), added paging for NLST output
+
+2003-09-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* cmdftp.c: last commit
+
+2003-09-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG, cmdftp.c, cmdftp.h, makefile: last commit
+
+2003-09-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* CHANGELOG: last commit
+
+2003-09-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* README, RELEASE, cmdftp.c, cmdftp.h: last commit
+
+2003-09-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* APPUNTI, CHANGELOG, COPYING, README, RELEASE, cmdftp.c, cmdftp.h,
+	makefile: Initial revision
+
+2003-09-19 Claudio Fontana     <sick_soul@users.sourceforge.net>
+	* APPUNTI, CHANGELOG, COPYING, README, RELEASE, cmdftp.c, cmdftp.h,
+	makefile: development version
+

@@ -1,0 +1,109 @@
+1.  LICENSE
+
+    This program (called cmdftp) is copyright (C) 2003-2005 Claudio Fontana,
+    and is free software under the GPL (GNU General Public License).
+    You may read all the details about the license in the COPYING file
+    included in this release.
+
+2.  GETTING THE CODE TO RUN
+
+    Use the sequence
+
+    ./configure
+    make
+    make install
+
+    A man page will be installed in section 1 of your manual.
+
+2.5 CONFIGURATION TIPS - Skip if you are fine with defaults
+    
+    Use ./configure --help to get all possible options.
+    
+    Here's an example:
+    ./configure --prefix=/usr/local --disable-largefile
+
+    The cmdftp executable will be installed in /usr/local/bin, and large file
+    support will be disabled (do not do it in real life).
+    
+    You can pass alternative compilation flags through CFLAGS.
+    For example, to optimize cmdftp for size using gcc, do something like:
+
+    ./configure CFLAGS='-Os'
+    make
+    make install
+
+    If you want to further reduce size, and do not mind losing all symbols,
+
+    ./configure CFLAGS='-Os'
+    make
+    make install-strip
+
+    This produces a small executable (30K on my i386 linux system), without
+    any loss in performance (since the bottleneck is the connection and time
+    is never spent in tight code, -O2 and -O3 are just wasting executable
+    space). I would suggest this for production, however you will not be able
+    to report bugs without symbols.
+
+    If you are using a size-optimized, stripped binary and experience runtime
+    errors (a segmentation fault for example), please reinstall cmdftp without
+    size-optimization and with full symbols before running gdb and backtracing
+    (See below about bug reporting).
+ 
+    Again, look at ./configure --help for all possible options available at
+    the configuration phase.
+
+3.  USAGE
+
+    type 
+
+    cmdftp -h
+
+    to get all command line options.
+    If your system supports long options, they are shown.
+
+4.  COMMANDS
+
+    At the cmdftp prompt, type
+
+    h
+
+    to display all available commands.
+    See the man page for the details.
+    
+5.  ENVIRONMENT
+
+    Environment variables recognized by cmdftp are:
+
+    HOME, PAGER, EDITOR
+
+    Also, cmdftp uses ~/.netrc for the autologin feature. See man netrc.
+    To set environment variables refer to your shell documentation.
+
+6.  "PROXY"
+
+    cmdftp deals with FTP only and does not handle proxies in any special way.
+    It has been tested working ok with ftp.proxy (http://www.ftpproxy.org).
+
+    Here is what you do with ftp.proxy:
+
+    Connect to the proxy, then specify login@host as username.
+
+    You might need to disable autologin if the ftp proxy allows for a single
+    login attempt.
+
+    Your connection will be with the proxy for all means.
+    For example, your ~/.netrc might not do what you expect it to do.
+    This could change in the future (feedback welcome).
+
+7.  COMMENTS/BUG REPORTS/HELP...
+
+    The help forum is no more so please send bug reports to the
+    sourceforge bug tracking at the project page:
+
+    http://sourceforge.net/project/cmdftp/ [Click on Bugs]
+
+    Or send feedback directly to the AUTHOR: sick_soul@users.sourceforge.net
+
+    There is documentation available on how to report cmdftp bugs in the
+    Docs section of the project page.
+

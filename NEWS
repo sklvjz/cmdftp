@@ -1,0 +1,9 @@
+changes from 0.9.3:
+
+ * use "local" / "remote" prompt
+ * changed progress output: progress first, better truncation of filename,
+   enforce 80 chars per line strictly.
+ * fix Solaris (and other unices?) problem with raw mode terminal output.
+
+
+
