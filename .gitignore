@@ -1,0 +1,6 @@
+*.o
+*.log
+config.status
+stamp-h1
+.deps/
+cmdftp
